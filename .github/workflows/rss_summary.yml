@@ -1,0 +1,39 @@
+name: News Summary Bot
+
+on:
+  schedule:
+    - cron: "0,30 * * * *"  # 매 30분마다 실행
+  workflow_dispatch:  # 수동 실행 버튼
+
+concurrency:
+  group: news-summary-bot
+  cancel-in-progress: false
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run bot
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        run: python main.py
+
+      - name: Save seen articles
+        run: |
+          git config user.email "action@github.com"
+          git config user.name "News Summary Bot"
+          git add seen_articles.json
+          git diff --staged --quiet || (git commit -m "chore: update seen articles" && git push)
