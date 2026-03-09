@@ -61,11 +61,11 @@ def summarize(title, content, source):
     client = OpenAI(api_key=OPENAI_API_KEY)
     response = client.chat.completions.create(
         model="gpt-4o-mini",
-        max_tokens=300,
+        max_tokens=500,
         messages=[
             {
                 "role": "user",
-                "content": f"""다음 기술 블로그 글을 비개발자도 이해할 수 있게 핵심만 3줄로 요약해줘.
+                "content": f"""다음 기술 블로그 글을 비개발자도 이해할 수 있게 핵심만 3줄로 요약하고, 비개발직군(사업팀, 기획자, 마케터 등)에게 얼마나 유용한지 평가해줘.
 전문 용어는 쉬운 말로 풀어서 설명해줘.
 
 출처: {source}
@@ -75,33 +75,73 @@ def summarize(title, content, source):
 아래 형식으로만 답해줘 (다른 말 붙이지 말고):
 • 첫 번째 줄
 • 두 번째 줄
-• 세 번째 줄""",
+• 세 번째 줄
+
+[비개발직군 관련도]
+등급: 높음 / 보통 / 낮음 중 하나만 선택
+한줄: 알면 좋은 이유를 한 줄로""",
             }
         ],
     )
     return response.choices[0].message.content.strip()
 
 
+def parse_summary(raw):
+    """3줄 요약과 비개발직군 관련도 섹션을 분리해서 반환."""
+    if "[비개발직군 관련도]" in raw:
+        parts = raw.split("[비개발직군 관련도]", 1)
+        summary = parts[0].strip()
+        relevance_raw = parts[1].strip()
+
+        grade = ""
+        reason = ""
+        for line in relevance_raw.splitlines():
+            line = line.strip()
+            if line.startswith("등급:"):
+                grade = line.replace("등급:", "").strip()
+            elif line.startswith("한줄:"):
+                reason = line.replace("한줄:", "").strip()
+
+        grade_emoji = {"높음": "🔴", "보통": "🟡", "낮음": "⚪"}.get(grade, "❓")
+        relevance = f"{grade_emoji} *관련도: {grade}*  |  {reason}" if grade else relevance_raw
+        return summary, relevance
+    return raw, None
+
+
 def post_to_slack(source, title, link, summary):
-    payload = {
-        "blocks": [
+    body, relevance = parse_summary(summary)
+
+    blocks = [
+        {
+            "type": "section",
+            "text": {
+                "type": "mrkdwn",
+                "text": f"📰 *[{source}]*\n<{link}|{title}>",
+            },
+        },
+        {
+            "type": "section",
+            "text": {
+                "type": "mrkdwn",
+                "text": f"*💡 3줄 요약*\n{body}",
+            },
+        },
+    ]
+
+    if relevance:
+        blocks.append(
             {
                 "type": "section",
                 "text": {
                     "type": "mrkdwn",
-                    "text": f"📰 *[{source}]*\n<{link}|{title}>",
+                    "text": f"*👥 비개발직군 참고*\n{relevance}",
                 },
-            },
-            {
-                "type": "section",
-                "text": {
-                    "type": "mrkdwn",
-                    "text": f"*💡 3줄 요약*\n{summary}",
-                },
-            },
-            {"type": "divider"},
-        ]
-    }
+            }
+        )
+
+    blocks.append({"type": "divider"})
+
+    payload = {"blocks": blocks}
     resp = requests.post(SLACK_WEBHOOK_URL, json=payload)
     resp.raise_for_status()
 
