@@ -4,6 +4,7 @@ import json
 import os
 import re
 import hashlib
+from datetime import datetime, timezone, timedelta
 from openai import OpenAI
 
 OPENAI_API_KEY = os.environ["OPENAI_API_KEY"]
@@ -25,18 +26,32 @@ RSS_FEEDS = [
 ]
 
 SEEN_FILE = "seen_articles.json"
+SEEN_TTL_DAYS = 14       # seen 항목 보관 기간 (중복 방지용)
+MAX_ARTICLE_AGE_DAYS = 7  # 이 기간 이내에 발행된 기사만 처리
 
 
 def load_seen():
     if os.path.exists(SEEN_FILE):
         with open(SEEN_FILE, "r") as f:
-            return set(json.load(f))
-    return set()
+            data = json.load(f)
+        # 기존 list 형식 → dict 형식으로 마이그레이션
+        if isinstance(data, list):
+            now = datetime.now(timezone.utc).isoformat()
+            return {item: now for item in data}
+        return data
+    return {}
 
 
 def save_seen(seen):
+    # TTL 기준으로 오래된 항목 정리
+    cutoff = datetime.now(timezone.utc) - timedelta(days=SEEN_TTL_DAYS)
+    cleaned = {
+        k: v for k, v in seen.items()
+        if datetime.fromisoformat(v) > cutoff
+    }
     with open(SEEN_FILE, "w") as f:
-        json.dump(list(seen), f, indent=2)
+        json.dump(cleaned, f, indent=2, ensure_ascii=False)
+    print(f"seen_articles: {len(cleaned)}개 유지 ({len(seen) - len(cleaned)}개 만료 삭제)")
 
 
 def get_article_id(entry):
@@ -45,6 +60,18 @@ def get_article_id(entry):
         or entry.get("link")
         or hashlib.md5(entry.get("title", "").encode()).hexdigest()
     )
+
+
+def get_entry_published(entry):
+    """기사 발행일 반환. 파싱 불가 시 None."""
+    for attr in ("published_parsed", "updated_parsed"):
+        val = getattr(entry, attr, None)
+        if val:
+            try:
+                return datetime(*val[:6], tzinfo=timezone.utc)
+            except Exception:
+                pass
+    return None
 
 
 def strip_html(text):
@@ -156,13 +183,32 @@ def post_to_slack(source, title, link, summary):
 def main():
     seen = load_seen()
     new_count = 0
+    age_cutoff = datetime.now(timezone.utc) - timedelta(days=MAX_ARTICLE_AGE_DAYS)
 
     for source, feed_url in RSS_FEEDS:
         try:
             feed = feedparser.parse(feed_url)
-            for entry in feed.entries[:5]:
+
+            if not feed.entries:
+                reason = str(feed.get("bozo_exception", "entries 없음"))
+                print(f"Feed 불량 [{source}]: {reason}")
+                continue
+
+            skipped_seen = 0
+            skipped_old = 0
+            processed = 0
+
+            for entry in feed.entries[:10]:
                 article_id = get_article_id(entry)
+
                 if article_id in seen:
+                    skipped_seen += 1
+                    continue
+
+                # 발행일 필터: 날짜 없으면 통과, 너무 오래된 것만 제외
+                published = get_entry_published(entry)
+                if published is not None and published < age_cutoff:
+                    skipped_old += 1
                     continue
 
                 title = entry.get("title", "제목 없음")
@@ -173,17 +219,20 @@ def main():
                 summary = summarize(title, content, source)
                 post_to_slack(source, title, link, summary)
 
-                seen.add(article_id)
+                seen[article_id] = datetime.now(timezone.utc).isoformat()
                 new_count += 1
+                processed += 1
+
+            print(
+                f"[{source}] 처리={processed}, 중복={skipped_seen}, 오래된것={skipped_old}, "
+                f"피드총={len(feed.entries)}개"
+            )
 
         except Exception as e:
             print(f"Error [{source}]: {e}")
 
-    if new_count > 0:
-        save_seen(seen)
-        print(f"Done: {new_count} articles posted")
-    else:
-        print("No new articles")
+    save_seen(seen)
+    print(f"완료: 총 {new_count}개 기사 발행")
 
 
 if __name__ == "__main__":
