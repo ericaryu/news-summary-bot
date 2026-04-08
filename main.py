@@ -26,14 +26,14 @@ RSS_FEEDS = [
     ("MIT Technology Review AI", "https://www.technologyreview.com/topic/artificial-intelligence/feed/"),
     ("VentureBeat AI",           "https://venturebeat.com/category/ai/feed/"),
     ("OpenAI News",              "https://openai.com/news/rss.xml"),
-    ("The Verge AI",             "https://www.theverge.com/rss/ai-artificial-intelligence/index.xml"),  # ✅ AI 전용 피드로 교체
+    ("The Verge AI",             "https://www.theverge.com/rss/ai-artificial-intelligence/index.xml"),
 
     # ── 일본 미디어 (AI 전용 피드 없음 → 키워드 필터 적용) ──────────
-    ("Qiita AI",                 "https://qiita.com/tags/ai/feed"),                # ✅ AI 태그 피드
-    ("PR Times AI",              "https://prtimes.jp/topics/keywords/AI/feed"),    # ✅ AI 토픽 피드
-    ("Gigazine",                 "https://gigazine.net/news/rss_2.0/"),            # AI 전용 피드 없음 → 키워드 필터
-    ("ASCII.jp",                 "https://ascii.jp/rss.xml"),                      # AI 전용 피드 없음 → 키워드 필터
-    ("Nikkei Asia",              "https://asia.nikkei.com/rss/feed/nar"),          # AI 전용 피드 없음 → 키워드 필터
+    ("Qiita AI",                 "https://qiita.com/tags/ai/feed"),
+    ("PR Times AI",              "https://prtimes.jp/topics/keywords/AI/feed"),
+    ("Gigazine",                 "https://gigazine.net/news/rss_2.0/"),
+    ("ASCII.jp",                 "https://ascii.jp/rss.xml"),
+    ("Nikkei Asia",              "https://asia.nikkei.com/rss/feed/nar"),
 ]
 
 AI_KEYWORDS = [
@@ -75,12 +75,8 @@ SKIP_FILTER_SOURCES = {
 
 def is_ai_related(title: str, content: str) -> bool:
     text = (title + " " + content).lower()
-    
-    # "ai"는 단어 단위로만 매칭 (Thailand, said 등 오탐 방지)
     if re.search(r'\bai\b', text):
         return True
-    
-    # 나머지 키워드는 기존 방식 유지 (충분히 길어서 오탐 위험 낮음)
     other_keywords = [kw for kw in AI_KEYWORDS if kw != "ai"]
     return any(kw.lower() in text for kw in other_keywords)
 
@@ -141,45 +137,84 @@ def get_content(entry):
     return strip_html(entry.get("summary", ""))
 
 
+# ─────────────────────────────────────────────────────────────────
+#  개선된 프롬프트
+# ─────────────────────────────────────────────────────────────────
+
+SUMMARY_PROMPT = """다음 기술 블로그/뉴스 글을 읽고 두 가지를 해줘.
+
+━━━ 1. 요약 ━━━
+비개발자(사업팀, 기획자, 마케터)가 이 글의 핵심을 파악할 수 있게 요약해줘.
+- 분량: 2~5줄. 핵심이 2줄이면 2줄, 설명이 필요하면 5줄까지 가능.
+- 전문 용어가 나오면 괄호 안에 쉬운 말로 풀어줘.
+- "~라고 한다", "~할 수 있다" 같은 애매한 마무리 대신, 글이 실제로 말하는 팩트를 써줘.
+- 글에 수치, 사례, 비교가 있으면 반드시 포함해줘.
+
+━━━ 2. 비개발직군 판정 ━━━
+이 글을 비개발직군이 읽어야 하는지 판정해줘.
+
+등급은 세 가지:
+📌 필독 — 비개발직군 실무에 바로 쓸 수 있는 내용 (AI 도구 활용법, 업무 자동화 사례, 시장/산업 트렌드, 비즈니스 전략 등)
+📎 참고 — 직접 쓰진 못하지만 트렌드나 맥락 이해에 도움 (새 기술 발표, 업계 동향, 경쟁사 움직임 등)
+⏭️ 스킵 — 개발자/엔지니어 대상 기술 구현 내용 (코드 아키텍처, 성능 최적화, 인프라 설계, 라이브러리 사용법 등)
+
+판정 규칙:
+- 제목이나 주제가 그럴듯해 보여도, 본문이 코드/설정/아키텍처 중심이면 ⏭️ 스킵이다.
+- "이 개념을 알면 마케팅에도 도움이 될 수 있다" 같은 억지 연결을 하지 마라. 실제로 비개발직군이 내일 당장 업무에 쓸 수 있는지만 봐라.
+- 애매하면 ⏭️ 스킵을 줘라. 관대하게 주지 마라.
+
+한줄 코멘트 규칙:
+- 📌 필독: 어떤 직군이, 어떤 상황에서, 이 글의 어떤 내용을 쓸 수 있는지 구체적으로.
+- 📎 참고: 이 글이 어떤 흐름/맥락을 이해하는 데 왜 유용한지, 글의 구체적 내용을 근거로.
+- ⏭️ 스킵: 이 글이 다루는 기술 주제를 한 문장으로 정리. (비개발자가 제목만 보고 "아 이런 글이구나" 판단할 수 있게)
+
+━━━ 예시 ━━━
+
+예시 A) 글 제목: "CLAUDE.md 최적화 — LLM Attention 메커니즘 역산 설계"
+→ 본문이 LLM 설정 파일의 토큰 배치, Recency Bias 활용, 프롬프트 구조 최적화를 다룸
+
+요약:
+LLM에게 지시를 내리는 설정 파일(CLAUDE.md)을 효과적으로 작성하는 방법을 다룬다. 100줄짜리 설정보다 35줄짜리가 더 효과적이라는 실험 결과를 근거로, LLM이 텍스트를 읽는 방식(최근 내용에 더 집중하는 Recency Bias)을 역이용한 구조 설계법을 제안한다.
+
+[비개발직군 판정]
+⏭️ 스킵 | AI 코딩 도구의 설정 파일 작성법을 다루는 개발자 대상 글이다.
+
+예시 B) 글 제목: "생성AI로 고객 문의 자동 분류 — 도입 3개월 후기"
+→ 본문이 CS팀의 문의 분류 자동화 도입 과정, 정확도 92%, 처리시간 60% 단축 사례를 다룸
+
+요약:
+CS팀에 생성AI 기반 고객 문의 자동 분류 시스템을 도입한 3개월 후기다. GPT-4o를 활용해 문의를 7개 카테고리로 자동 분류하며, 정확도 92%, 1건당 처리시간이 평균 3분에서 1.2분으로 60% 단축됐다. 오분류 대응을 위해 신뢰도 80% 미만 건은 사람이 재확인하는 하이브리드 방식을 채택했다.
+
+[비개발직군 판정]
+📌 필독 | CS·운영팀이 AI 문의 분류 도입을 검토할 때 정확도(92%), 처리시간 단축(60%), 하이브리드 운영 방식을 직접 참고할 수 있다.
+
+━━━ 응답 형식 ━━━
+아래 형식으로만 답해. 다른 말 붙이지 마.
+
+요약:
+(여기에 요약)
+
+[비개발직군 판정]
+등급이모지 등급명 | 한줄 코멘트
+
+출처: {source}
+제목: {title}
+내용: {content}"""
+
+
 def summarize(title, content, source):
     client = OpenAI(api_key=OPENAI_API_KEY)
     response = client.chat.completions.create(
         model="gpt-4o-mini",
-        max_tokens=600,
+        max_tokens=800,
         messages=[
             {
                 "role": "user",
-                "content": f"""다음 기술 블로그 글을 비개발자도 이해할 수 있게 핵심만 3줄로 요약하고, 비개발직군(사업팀, 기획자, 마케터 등)에게 얼마나 유용한지 평가해줘.
-전문 용어는 쉬운 말로 풀어서 설명해줘.
-
-출처: {source}
-제목: {title}
-내용: {content[:3000]}
-
-아래 형식으로만 답해줘 (다른 말 붙이지 말고):
-- 첫 번째 줄
-- 두 번째 줄
-- 세 번째 줄
-
-[비개발직군 관련도]
-등급: 높음 / 보통 / 낮음 중 하나만 선택
-한줄: 알면 좋은 이유를 한 줄로
-
-등급 판정 규칙(중요):
-- 낮음(약 30%): 비개발직군이 '꼭 읽어보면 좋은' 수준. 실무 직접 적용성은 낮지만 트렌드/배경 이해에 유익.
-- 보통(약 30%): 읽으면 업무(기획/마케팅/사업)에 도움될 수도 있는 수준. 간접 적용 가능.
-- 높음(약 40%): 개발직군에 더 직접적으로 유용한 기술 구현/아키텍처/성능/코드 중심 내용.
-- 전체 기사들을 상대적으로 분류해 비율이 한쪽으로 치우치지 않게 조정.
-- 애매하면 '높음'보다 '보통' 또는 '낮음'을 우선 검토.
-
-한줄 작성 규칙(중요):
-- 반드시 이 글의 구체적인 내용을 근거로 써야 한다.
-- 등급이 '높음'이면: 비개발자가 읽지 않아도 되는 이유를 이 글의 내용 기반으로 솔직하게 써라.
-- 등급이 '보통'이면: 이 글의 어떤 내용이, 어떤 직군의, 어떤 실무 상황에 직접 연결되는지 써라.
-- 등급이 '낮음'이면: 이 글이 어떤 흐름이나 맥락을 이해하는 데 왜 유익한지 써라.
-- 이 글에서 실제로 다루는 기술명, 수치, 상황을 반드시 언급하고 끝내라.
-- 글의 내용을 한 번도 언급하지 않은 채 마무리되는 문장은 다시 써라.
-- 2~3문장이 되더라도 구체성이 우선이다.""",
+                "content": SUMMARY_PROMPT.format(
+                    source=source,
+                    title=title,
+                    content=content[:3000],
+                ),
             }
         ],
     )
@@ -187,24 +222,29 @@ def summarize(title, content, source):
 
 
 def parse_summary(raw):
-    if "[비개발직군 관련도]" in raw:
-        parts = raw.split("[비개발직군 관련도]", 1)
+    """
+    파싱 대상 형식:
+        요약:
+        (본문)
+
+        [비개발직군 판정]
+        ⏭️ 스킵 | 한줄 코멘트
+    """
+    summary = raw
+    relevance = None
+
+    if "[비개발직군 판정]" in raw:
+        parts = raw.split("[비개발직군 판정]", 1)
         summary = parts[0].strip()
-        relevance_raw = parts[1].strip()
+        relevance_line = parts[1].strip().splitlines()[0].strip()
 
-        grade = ""
-        reason = ""
-        for line in relevance_raw.splitlines():
-            line = line.strip()
-            if line.startswith("등급:"):
-                grade = line.replace("등급:", "").strip()
-            elif line.startswith("한줄:"):
-                reason = line.replace("한줄:", "").strip()
+        # "요약:" 접두어 제거
+        if summary.startswith("요약:"):
+            summary = summary[len("요약:"):].strip()
 
-        grade_emoji = {"높음": "🔴", "보통": "🟡", "낮음": "⚪"}.get(grade, "❓")
-        relevance = f"{grade_emoji} *관련도: {grade}*  |  {reason}" if grade else relevance_raw
-        return summary, relevance
-    return raw, None
+        relevance = relevance_line  # 이모지+등급+코멘트가 한 줄로 들어옴
+
+    return summary, relevance
 
 
 def post_to_slack(source, title, link, summary):
@@ -222,7 +262,7 @@ def post_to_slack(source, title, link, summary):
             "type": "section",
             "text": {
                 "type": "mrkdwn",
-                "text": f"*💡 3줄 요약*\n{body}",
+                "text": f"*💡 요약*\n{body}",
             },
         },
     ]
@@ -233,7 +273,7 @@ def post_to_slack(source, title, link, summary):
                 "type": "section",
                 "text": {
                     "type": "mrkdwn",
-                    "text": f"*👥 비개발직군 참고*\n{relevance}",
+                    "text": f"*👥 비개발직군*\n{relevance}",
                 },
             }
         )
