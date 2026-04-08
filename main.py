@@ -11,6 +11,7 @@ OPENAI_API_KEY = os.environ["OPENAI_API_KEY"]
 SLACK_WEBHOOK_URL = os.environ["SLACK_WEBHOOK_URL"]
 
 RSS_FEEDS = [
+    # ── 한국 테크블로그 (키워드 필터 없음) ─────────────────────────
     ("MUSINSA tech",             "https://medium.com/feed/musinsa-tech"),
     ("올리브영 테크블로그",          "https://oliveyoung.tech/rss.xml"),
     ("토스테크",                   "https://toss.tech/rss.xml"),
@@ -19,32 +20,73 @@ RSS_FEEDS = [
     ("컬리 기술 블로그",            "https://helloworld.kurly.com/feed.xml"),
     ("카카오엔터프라이즈",           "https://tech.kakaoenterprise.com/rss"),
     ("LY Corp Tech - AI",        "https://techblog.lycorp.co.jp/ko/tag/AI/feed/index.xml"),
+
+    # ── 글로벌 AI 전용 피드 (키워드 필터 없음) ──────────────────────
     ("TechCrunch AI",            "https://techcrunch.com/category/artificial-intelligence/feed/"),
     ("MIT Technology Review AI", "https://www.technologyreview.com/topic/artificial-intelligence/feed/"),
     ("VentureBeat AI",           "https://venturebeat.com/category/ai/feed/"),
     ("OpenAI News",              "https://openai.com/news/rss.xml"),
-    # ── 추가된 피드 (검증 완료) ─────────────────────────────────
-    ("Qiita 인기글",              "https://qiita.com/popular-items/feed.atom"),  # ✅ 로그인 불필요
-    ("Gigazine",                 "https://gigazine.net/news/rss_2.0/"),           # ✅ 정상
-    ("PR Times",                 "https://prtimes.jp/index.rdf"),                 # ✅ 정상 (주의: 하루 수백건)
-    ("ASCII.jp",                 "https://ascii.jp/rss.xml"),                     # ✅ 정상
-    ("Nikkei Asia",              "https://asia.nikkei.com/rss/feed/nar"),         # ✅ 영문판 (유료기사 일부 제한)
-    ("Mining.com",               "https://www.mining.com/feed/"),                 # ✅ 정상
-    ("The Verge",                "https://www.theverge.com/rss/index.xml"),       # ✅ 정상 (본문 일부만 제공)
-    ("Watch Impress",            "https://www.watch.impress.co.jp/data/rss/1.0/ipw/feed.rdf"),  # ✅ 정상
-    # Drop.com → RSS 피드 없음 (Corsair에 인수 후 e-commerce 전용 사이트)
+    ("The Verge AI",             "https://www.theverge.com/rss/ai-artificial-intelligence/index.xml"),  # ✅ AI 전용 피드로 교체
+
+    # ── 일본 미디어 (AI 전용 피드 없음 → 키워드 필터 적용) ──────────
+    ("Qiita AI",                 "https://qiita.com/tags/ai/feed"),                # ✅ AI 태그 피드
+    ("PR Times AI",              "https://prtimes.jp/topics/keywords/AI/feed"),    # ✅ AI 토픽 피드
+    ("Gigazine",                 "https://gigazine.net/news/rss_2.0/"),            # AI 전용 피드 없음 → 키워드 필터
+    ("ASCII.jp",                 "https://ascii.jp/rss.xml"),                      # AI 전용 피드 없음 → 키워드 필터
+    ("Nikkei Asia",              "https://asia.nikkei.com/rss/feed/nar"),          # AI 전용 피드 없음 → 키워드 필터
 ]
 
+AI_KEYWORDS = [
+    # 영어
+    "ai", "artificial intelligence", "machine learning", "deep learning",
+    "llm", "large language model", "generative ai", "gpt", "claude",
+    "gemini", "copilot", "chatgpt", "stable diffusion", "diffusion model",
+    "neural network", "transformer", "fine-tun", "rag", "vector",
+    "embedding", "agent", "automation", "computer vision", "nlp",
+    "natural language", "openai", "anthropic", "mistral", "hugging face",
+    # 한국어
+    "인공지능", "머신러닝", "딥러닝", "생성형", "자동화", "언어모델",
+    "챗봇", "AI", "데이터 분석", "자연어",
+    # 일본어
+    "人工知能", "機械学習", "深層学習", "生成AI", "自動化", "言語モデル",
+    "チャットボット", "ディープラーニング", "ベクトル", "エージェント",
+]
+
+SKIP_FILTER_SOURCES = {
+    # 한국 테크블로그
+    "MUSINSA tech",
+    "올리브영 테크블로그",
+    "토스테크",
+    "D2 Blog (Naver)",
+    "우아한형제들",
+    "컬리 기술 블로그",
+    "카카오엔터프라이즈",
+    # 글로벌 AI 전용 피드
+    "TechCrunch AI",
+    "MIT Technology Review AI",
+    "VentureBeat AI",
+    "OpenAI News",
+    "The Verge AI",
+    "LY Corp Tech - AI",
+    "Qiita AI",
+    "PR Times AI",
+}
+
+
+def is_ai_related(title: str, content: str) -> bool:
+    text = (title + " " + content).lower()
+    return any(kw.lower() in text for kw in AI_KEYWORDS)
+
+
 SEEN_FILE = "seen_articles.json"
-SEEN_TTL_DAYS = 14       # seen 항목 보관 기간 (중복 방지용)
-MAX_ARTICLE_AGE_DAYS = 7  # 이 기간 이내에 발행된 기사만 처리
+SEEN_TTL_DAYS = 14
+MAX_ARTICLE_AGE_DAYS = 7
 
 
 def load_seen():
     if os.path.exists(SEEN_FILE):
         with open(SEEN_FILE, "r") as f:
             data = json.load(f)
-        # 기존 list 형식 → dict 형식으로 마이그레이션
         if isinstance(data, list):
             now = datetime.now(timezone.utc).isoformat()
             return {item: now for item in data}
@@ -53,7 +95,6 @@ def load_seen():
 
 
 def save_seen(seen):
-    # TTL 기준으로 오래된 항목 정리
     cutoff = datetime.now(timezone.utc) - timedelta(days=SEEN_TTL_DAYS)
     cleaned = {
         k: v for k, v in seen.items()
@@ -73,7 +114,6 @@ def get_article_id(entry):
 
 
 def get_entry_published(entry):
-    """기사 발행일 반환. 파싱 불가 시 None."""
     for attr in ("published_parsed", "updated_parsed"):
         val = getattr(entry, attr, None)
         if val:
@@ -98,7 +138,7 @@ def summarize(title, content, source):
     client = OpenAI(api_key=OPENAI_API_KEY)
     response = client.chat.completions.create(
         model="gpt-4o-mini",
-        max_tokens=500,
+        max_tokens=600,
         messages=[
             {
                 "role": "user",
@@ -110,9 +150,9 @@ def summarize(title, content, source):
 내용: {content[:3000]}
 
 아래 형식으로만 답해줘 (다른 말 붙이지 말고):
-• 첫 번째 줄
-• 두 번째 줄
-• 세 번째 줄
+- 첫 번째 줄
+- 두 번째 줄
+- 세 번째 줄
 
 [비개발직군 관련도]
 등급: 높음 / 보통 / 낮음 중 하나만 선택
@@ -123,7 +163,16 @@ def summarize(title, content, source):
 - 보통(약 30%): 읽으면 업무(기획/마케팅/사업)에 도움될 수도 있는 수준. 간접 적용 가능.
 - 높음(약 40%): 개발직군에 더 직접적으로 유용한 기술 구현/아키텍처/성능/코드 중심 내용.
 - 전체 기사들을 상대적으로 분류해 비율이 한쪽으로 치우치지 않게 조정.
-- 애매하면 '높음'보다 '보통' 또는 '낮음'을 우선 검토.""",
+- 애매하면 '높음'보다 '보통' 또는 '낮음'을 우선 검토.
+
+한줄 작성 규칙(중요):
+- 반드시 이 글의 구체적인 내용을 근거로 써야 한다.
+- 등급이 '높음'이면: 비개발자가 읽지 않아도 되는 이유를 이 글의 내용 기반으로 솔직하게 써라.
+- 등급이 '보통'이면: 이 글의 어떤 내용이, 어떤 직군의, 어떤 실무 상황에 직접 연결되는지 써라.
+- 등급이 '낮음'이면: 이 글이 어떤 흐름이나 맥락을 이해하는 데 왜 유익한지 써라.
+- 이 글에서 실제로 다루는 기술명, 수치, 상황을 반드시 언급하고 끝내라.
+- 글의 내용을 한 번도 언급하지 않은 채 마무리되는 문장은 다시 써라.
+- 2~3문장이 되더라도 구체성이 우선이다.""",
             }
         ],
     )
@@ -131,7 +180,6 @@ def summarize(title, content, source):
 
 
 def parse_summary(raw):
-    """3줄 요약과 비개발직군 관련도 섹션을 분리해서 반환."""
     if "[비개발직군 관련도]" in raw:
         parts = raw.split("[비개발직군 관련도]", 1)
         summary = parts[0].strip()
@@ -206,6 +254,7 @@ def main():
 
             skipped_seen = 0
             skipped_old = 0
+            skipped_filter = 0
             processed = 0
 
             for entry in feed.entries[:10]:
@@ -215,15 +264,20 @@ def main():
                     skipped_seen += 1
                     continue
 
-                # 발행일 필터: 날짜 없으면 통과, 너무 오래된 것만 제외
                 published = get_entry_published(entry)
                 if published is not None and published < age_cutoff:
                     skipped_old += 1
                     continue
 
                 title = entry.get("title", "제목 없음")
-                link = entry.get("link", "")
                 content = get_content(entry)
+
+                if source not in SKIP_FILTER_SOURCES:
+                    if not is_ai_related(title, content):
+                        skipped_filter += 1
+                        continue
+
+                link = entry.get("link", "")
 
                 print(f"New: [{source}] {title}")
                 summary = summarize(title, content, source)
@@ -234,7 +288,8 @@ def main():
                 processed += 1
 
             print(
-                f"[{source}] 처리={processed}, 중복={skipped_seen}, 오래된것={skipped_old}, "
+                f"[{source}] 처리={processed}, 중복={skipped_seen}, "
+                f"오래된것={skipped_old}, AI무관={skipped_filter}, "
                 f"피드총={len(feed.entries)}개"
             )
 
