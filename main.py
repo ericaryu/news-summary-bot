@@ -23,6 +23,16 @@ RSS_FEEDS = [
     ("MIT Technology Review AI", "https://www.technologyreview.com/topic/artificial-intelligence/feed/"),
     ("VentureBeat AI",           "https://venturebeat.com/category/ai/feed/"),
     ("OpenAI News",              "https://openai.com/news/rss.xml"),
+    # ── 추가된 피드 (검증 완료) ─────────────────────────────────
+    ("Qiita 인기글",              "https://qiita.com/popular-items/feed.atom"),  # ✅ 로그인 불필요
+    ("Gigazine",                 "https://gigazine.net/news/rss_2.0/"),           # ✅ 정상
+    ("PR Times",                 "https://prtimes.jp/index.rdf"),                 # ✅ 정상 (주의: 하루 수백건)
+    ("ASCII.jp",                 "https://ascii.jp/rss.xml"),                     # ✅ 정상
+    ("Nikkei Asia",              "https://asia.nikkei.com/rss/feed/nar"),         # ✅ 영문판 (유료기사 일부 제한)
+    ("Mining.com",               "https://www.mining.com/feed/"),                 # ✅ 정상
+    ("The Verge",                "https://www.theverge.com/rss/index.xml"),       # ✅ 정상 (본문 일부만 제공)
+    ("Watch Impress",            "https://www.watch.impress.co.jp/data/rss/1.0/ipw/feed.rdf"),  # ✅ 정상
+    # Drop.com → RSS 피드 없음 (Corsair에 인수 후 e-commerce 전용 사이트)
 ]
 
 SEEN_FILE = "seen_articles.json"
