@@ -75,7 +75,14 @@ SKIP_FILTER_SOURCES = {
 
 def is_ai_related(title: str, content: str) -> bool:
     text = (title + " " + content).lower()
-    return any(kw.lower() in text for kw in AI_KEYWORDS)
+    
+    # "ai"는 단어 단위로만 매칭 (Thailand, said 등 오탐 방지)
+    if re.search(r'\bai\b', text):
+        return True
+    
+    # 나머지 키워드는 기존 방식 유지 (충분히 길어서 오탐 위험 낮음)
+    other_keywords = [kw for kw in AI_KEYWORDS if kw != "ai"]
+    return any(kw.lower() in text for kw in other_keywords)
 
 
 SEEN_FILE = "seen_articles.json"
