@@ -1,12 +1,4 @@
 {
-  "https://openai.com/academy/personalization": "2026-04-16T09:56:09.269125+00:00",
-  "tag:qiita.com,2005:PublicArticle/2193249": "2026-04-16T09:56:17.877840+00:00",
-  "tag:qiita.com,2005:PublicArticle/2193243": "2026-04-16T09:56:22.251959+00:00",
-  "tag:qiita.com,2005:PublicArticle/2193233": "2026-04-16T09:56:26.380861+00:00",
-  "tag:qiita.com,2005:PublicArticle/2193223": "2026-04-16T09:56:30.014465+00:00",
-  "https://ascii.jp/elem/000/004/395/4395861/?rss": "2026-04-16T09:56:34.652457+00:00",
-  "https://ascii.jp/elem/000/004/395/4395502/?rss": "2026-04-16T09:56:37.704145+00:00",
-  "https://asia.nikkei.com/business/markets/equities/japanese-stocks-hit-new-high-as-ai-boosts-tech-heavy-asian-markets": "2026-04-16T09:56:41.335372+00:00",
   "https://openai.com/index/accelerating-cyber-defense-ecosystem": "2026-04-16T11:07:08.503913+00:00",
   "https://gigazine.net/news/20260416-dynamic-search-ads-ai-max/": "2026-04-16T11:07:13.576231+00:00",
   "https://techcrunch.com/?p=3112969": "2026-04-16T12:42:53.019106+00:00",
@@ -1127,5 +1119,11 @@
   "https://gigazine.net/news/20260430-mistral-medium-3-5/": "2026-04-30T08:40:35.444867+00:00",
   "https://gigazine.net/news/20260430-openai-ban-codex-ai-goblins-gremlins/": "2026-04-30T08:40:38.533857+00:00",
   "https://gigazine.net/news/20260430-gemini-generate-files/": "2026-04-30T08:40:41.855468+00:00",
-  "https://ascii.jp/elem/000/004/399/4399447/?rss": "2026-04-30T08:40:45.490828+00:00"
+  "https://ascii.jp/elem/000/004/399/4399447/?rss": "2026-04-30T08:40:45.490828+00:00",
+  "tag:qiita.com,2005:PublicArticle/2200602": "2026-04-30T10:56:34.309902+00:00",
+  "tag:qiita.com,2005:PublicArticle/2200596": "2026-04-30T10:56:37.521513+00:00",
+  "tag:qiita.com,2005:PublicArticle/2200587": "2026-04-30T10:56:40.512045+00:00",
+  "tag:qiita.com,2005:PublicArticle/2200580": "2026-04-30T10:56:43.411063+00:00",
+  "https://gigazine.net/news/20260430-hermes-claude-code/": "2026-04-30T10:56:47.433479+00:00",
+  "https://gigazine.net/news/20260430-sensenova-u1-image-generation-ai/": "2026-04-30T10:56:50.984177+00:00"
 }
