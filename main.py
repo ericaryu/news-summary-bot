@@ -188,7 +188,7 @@ def post_to_slack(source, title, link, summary):
         {"type": "divider"},
     ]
 
-    payload = {"blocks": blocks}
+    payload = {"blocks": blocks, "unfurl_links": False, "unfurl_media": False}
     resp = requests.post(SLACK_WEBHOOK_URL, json=payload)
     resp.raise_for_status()
 
