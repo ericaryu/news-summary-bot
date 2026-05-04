@@ -29,7 +29,6 @@ RSS_FEEDS = [
     ("The Verge AI",             "https://www.theverge.com/rss/ai-artificial-intelligence/index.xml"),
 
     # ── 일본 미디어 (AI 전용 피드 없음 → 키워드 필터 적용) ──────────
-    ("Qiita AI",                 "https://qiita.com/tags/ai/feed"),
     ("PR Times AI",              "https://prtimes.jp/topics/keywords/AI/feed"),
     ("Gigazine",                 "https://gigazine.net/news/rss_2.0/"),
     ("ASCII.jp",                 "https://ascii.jp/rss.xml"),
@@ -68,7 +67,6 @@ SKIP_FILTER_SOURCES = {
     "OpenAI News",
     "The Verge AI",
     "LY Corp Tech - AI",
-    "Qiita AI",
     "PR Times AI",
 }
 
@@ -137,65 +135,15 @@ def get_content(entry):
     return strip_html(entry.get("summary", ""))
 
 
-# ─────────────────────────────────────────────────────────────────
-#  개선된 프롬프트
-# ─────────────────────────────────────────────────────────────────
+SUMMARY_PROMPT = """다음 기술 블로그/뉴스 글의 핵심을 2~5줄로 요약해줘.
 
-SUMMARY_PROMPT = """다음 기술 블로그/뉴스 글을 읽고 두 가지를 해줘.
-
-━━━ 1. 요약 ━━━
-비개발자(사업팀, 기획자, 마케터)가 이 글의 핵심을 파악할 수 있게 요약해줘.
-- 분량: 2~5줄. 핵심이 2줄이면 2줄, 설명이 필요하면 5줄까지 가능.
+규칙:
+- 각 줄은 "- "로 시작해줘.
+- 핵심이 2줄이면 2줄, 설명이 필요하면 5줄까지 가능.
 - 전문 용어가 나오면 괄호 안에 쉬운 말로 풀어줘.
-- "~라고 한다", "~할 수 있다" 같은 애매한 마무리 대신, 글이 실제로 말하는 팩트를 써줘.
-- 글에 수치, 사례, 비교가 있으면 반드시 포함해줘.
-
-━━━ 2. 비개발직군 판정 ━━━
-이 글을 비개발직군이 읽어야 하는지 판정해줘.
-
-등급은 세 가지:
-📌 필독 — 비개발직군 실무에 바로 쓸 수 있는 내용 (AI 도구 활용법, 업무 자동화 사례, 시장/산업 트렌드, 비즈니스 전략 등)
-📎 참고 — 직접 쓰진 못하지만 트렌드나 맥락 이해에 도움 (새 기술 발표, 업계 동향, 경쟁사 움직임 등)
-⏭️ 스킵 — 개발자/엔지니어 대상 기술 구현 내용 (코드 아키텍처, 성능 최적화, 인프라 설계, 라이브러리 사용법 등)
-
-판정 규칙:
-- 제목이나 주제가 그럴듯해 보여도, 본문이 코드/설정/아키텍처 중심이면 ⏭️ 스킵이다.
-- "이 개념을 알면 마케팅에도 도움이 될 수 있다" 같은 억지 연결을 하지 마라. 실제로 비개발직군이 내일 당장 업무에 쓸 수 있는지만 봐라.
-- 애매하면 ⏭️ 스킵을 줘라. 관대하게 주지 마라.
-
-한줄 코멘트 규칙:
-- 📌 필독: 어떤 직군이, 어떤 상황에서, 이 글의 어떤 내용을 쓸 수 있는지 구체적으로.
-- 📎 참고: 이 글이 어떤 흐름/맥락을 이해하는 데 왜 유용한지, 글의 구체적 내용을 근거로.
-- ⏭️ 스킵: 이 글이 다루는 기술 주제를 한 문장으로 정리. (비개발자가 제목만 보고 "아 이런 글이구나" 판단할 수 있게)
-
-━━━ 예시 ━━━
-
-예시 A) 글 제목: "CLAUDE.md 최적화 — LLM Attention 메커니즘 역산 설계"
-→ 본문이 LLM 설정 파일의 토큰 배치, Recency Bias 활용, 프롬프트 구조 최적화를 다룸
-
-요약:
-LLM에게 지시를 내리는 설정 파일(CLAUDE.md)을 효과적으로 작성하는 방법을 다룬다. 100줄짜리 설정보다 35줄짜리가 더 효과적이라는 실험 결과를 근거로, LLM이 텍스트를 읽는 방식(최근 내용에 더 집중하는 Recency Bias)을 역이용한 구조 설계법을 제안한다.
-
-[비개발직군 판정]
-⏭️ 스킵 | AI 코딩 도구의 설정 파일 작성법을 다루는 개발자 대상 글이다.
-
-예시 B) 글 제목: "생성AI로 고객 문의 자동 분류 — 도입 3개월 후기"
-→ 본문이 CS팀의 문의 분류 자동화 도입 과정, 정확도 92%, 처리시간 60% 단축 사례를 다룸
-
-요약:
-CS팀에 생성AI 기반 고객 문의 자동 분류 시스템을 도입한 3개월 후기다. GPT-4o를 활용해 문의를 7개 카테고리로 자동 분류하며, 정확도 92%, 1건당 처리시간이 평균 3분에서 1.2분으로 60% 단축됐다. 오분류 대응을 위해 신뢰도 80% 미만 건은 사람이 재확인하는 하이브리드 방식을 채택했다.
-
-[비개발직군 판정]
-📌 필독 | CS·운영팀이 AI 문의 분류 도입을 검토할 때 정확도(92%), 처리시간 단축(60%), 하이브리드 운영 방식을 직접 참고할 수 있다.
-
-━━━ 응답 형식 ━━━
-아래 형식으로만 답해. 다른 말 붙이지 마.
-
-요약:
-(여기에 요약)
-
-[비개발직군 판정]
-등급이모지 등급명 | 한줄 코멘트
+- "~라고 한다", "~할 수 있다" 같은 애매한 마무리 대신 글이 실제로 말하는 팩트를 써줘.
+- 수치, 사례, 비교가 있으면 반드시 포함해줘.
+- 다른 말 붙이지 말고 불릿 줄만 답해줘.
 
 출처: {source}
 제목: {title}
@@ -206,7 +154,7 @@ def summarize(title, content, source):
     client = OpenAI(api_key=OPENAI_API_KEY)
     response = client.chat.completions.create(
         model="gpt-4o-mini",
-        max_tokens=800,
+        max_tokens=600,
         messages=[
             {
                 "role": "user",
@@ -221,35 +169,7 @@ def summarize(title, content, source):
     return response.choices[0].message.content.strip()
 
 
-def parse_summary(raw):
-    """
-    파싱 대상 형식:
-        요약:
-        (본문)
-
-        [비개발직군 판정]
-        ⏭️ 스킵 | 한줄 코멘트
-    """
-    summary = raw
-    relevance = None
-
-    if "[비개발직군 판정]" in raw:
-        parts = raw.split("[비개발직군 판정]", 1)
-        summary = parts[0].strip()
-        relevance_line = parts[1].strip().splitlines()[0].strip()
-
-        # "요약:" 접두어 제거
-        if summary.startswith("요약:"):
-            summary = summary[len("요약:"):].strip()
-
-        relevance = relevance_line  # 이모지+등급+코멘트가 한 줄로 들어옴
-
-    return summary, relevance
-
-
 def post_to_slack(source, title, link, summary):
-    body, relevance = parse_summary(summary)
-
     blocks = [
         {
             "type": "section",
@@ -262,23 +182,11 @@ def post_to_slack(source, title, link, summary):
             "type": "section",
             "text": {
                 "type": "mrkdwn",
-                "text": f"*💡 요약*\n{body}",
+                "text": summary,
             },
         },
+        {"type": "divider"},
     ]
-
-    if relevance:
-        blocks.append(
-            {
-                "type": "section",
-                "text": {
-                    "type": "mrkdwn",
-                    "text": f"*👥 비개발직군*\n{relevance}",
-                },
-            }
-        )
-
-    blocks.append({"type": "divider"})
 
     payload = {"blocks": blocks}
     resp = requests.post(SLACK_WEBHOOK_URL, json=payload)
