@@ -1,10 +1,4 @@
 {
-  "tag:qiita.com,2005:PublicArticle/2201564": "2026-05-02T08:49:29.428433+00:00",
-  "tag:qiita.com,2005:PublicArticle/2201559": "2026-05-02T08:49:33.774485+00:00",
-  "tag:qiita.com,2005:PublicArticle/2201557": "2026-05-02T08:49:37.464503+00:00",
-  "tag:qiita.com,2005:PublicArticle/2201554": "2026-05-02T08:49:40.742876+00:00",
-  "https://ascii.jp/elem/000/004/399/4399948/?rss": "2026-05-02T08:49:44.464577+00:00",
-  "https://asia.nikkei.com/spotlight/comment/how-ai-speeds-kill-chain-in-us-attacks-on-iran": "2026-05-02T08:49:47.451869+00:00",
   "tag:qiita.com,2005:PublicArticle/2201605": "2026-05-02T09:59:03.866793+00:00",
   "tag:qiita.com,2005:PublicArticle/2201591": "2026-05-02T09:59:06.567429+00:00",
   "tag:qiita.com,2005:PublicArticle/2201586": "2026-05-02T09:59:10.782453+00:00",
@@ -613,5 +607,9 @@
   "https://openai.com/index/databricks": "2026-05-16T01:16:00.436601+00:00",
   "https://ascii.jp/elem/000/004/402/4402634/?rss": "2026-05-16T04:53:28.092755+00:00",
   "https://asia.nikkei.com/spotlight/trump-xi-summit/taiwan-arms-sale-in-focus-as-trump-insists-he-gave-no-ground-to-xi": "2026-05-16T04:53:31.294597+00:00",
-  "https://ascii.jp/elem/000/004/401/4401928/?rss": "2026-05-16T07:15:23.765073+00:00"
+  "https://ascii.jp/elem/000/004/401/4401928/?rss": "2026-05-16T07:15:23.765073+00:00",
+  "https://openai.com/academy/codex-for-work/how-sales-teams-use-codex": "2026-05-16T09:11:05.646920+00:00",
+  "https://openai.com/academy/codex-for-work/how-business-operations-teams-use-codex": "2026-05-16T09:11:08.671351+00:00",
+  "https://openai.com/academy/codex-for-work/how-data-science-teams-use-codex": "2026-05-16T09:11:11.412829+00:00",
+  "https://gigazine.net/news/20260516-spritefusion-pixel-snapper/": "2026-05-16T09:11:15.199090+00:00"
 }
