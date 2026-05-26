@@ -1,14 +1,4 @@
 {
-  "https://techcrunch.com/?p=3121483": "2026-05-12T04:00:20.211002+00:00",
-  "https://techcrunch.com/?p=3121370": "2026-05-12T04:00:22.300985+00:00",
-  "https://gigazine.net/news/20260512-gitlab-act-2/": "2026-05-12T04:00:26.105659+00:00",
-  "https://gigazine.net/news/20260512-openai-deployment-company/": "2026-05-12T04:00:27.998494+00:00",
-  "https://gigazine.net/news/20260512-game-image-ai-sony-patent/": "2026-05-12T04:00:30.068326+00:00",
-  "https://gigazine.net/news/20260512-openai-daybreak/": "2026-05-12T04:00:33.311273+00:00",
-  "https://ascii.jp/elem/000/004/401/4401092/?rss": "2026-05-12T04:00:37.326646+00:00",
-  "https://ascii.jp/elem/000/004/400/4400944/?rss": "2026-05-12T04:00:39.926107+00:00",
-  "https://asia.nikkei.com/spotlight/supply-chain/helium-tank-and-solvent-shortages-latest-iran-war-pain-for-tech-suppliers2": "2026-05-12T04:00:43.340704+00:00",
-  "https://asia.nikkei.com/economy/japanese-expats-being-sent-home-from-thailand-as-employers-cut-costs": "2026-05-12T04:00:45.703823+00:00",
   "https://techcrunch.com/?p=3121516": "2026-05-12T06:44:41.124273+00:00",
   "https://gigazine.net/news/20260512-interfaze-new-model-architecture/": "2026-05-12T06:44:45.224327+00:00",
   "https://gigazine.net/news/20260512-claude-code-agent-view-aws/": "2026-05-12T06:44:48.264307+00:00",
@@ -563,5 +553,12 @@
   "https://gigazine.net/news/20260526-gemma-4-video-index/": "2026-05-26T00:07:29.877323+00:00",
   "https://ascii.jp/elem/000/004/404/4404849/?rss": "2026-05-26T00:07:32.044651+00:00",
   "https://ascii.jp/elem/000/004/403/4403742/?rss": "2026-05-26T00:07:33.423253+00:00",
-  "https://ascii.jp/elem/000/004/404/4404552/?rss": "2026-05-26T00:07:35.700025+00:00"
+  "https://ascii.jp/elem/000/004/404/4404552/?rss": "2026-05-26T00:07:35.700025+00:00",
+  "https://medium.com/p/ea9dc5ca2add": "2026-05-26T04:44:03.623355+00:00",
+  "https://gigazine.net/news/20260526-deepseek-v4-pro-pricing/": "2026-05-26T04:44:21.492196+00:00",
+  "https://gigazine.net/news/20260526-leo-xiv-magnifica-humanitas/": "2026-05-26T04:44:23.911978+00:00",
+  "https://gigazine.net/news/20260526-fined-bragging-spied-users-phones/": "2026-05-26T04:44:27.165280+00:00",
+  "https://ascii.jp/elem/000/004/404/4404943/?rss": "2026-05-26T04:44:29.479357+00:00",
+  "https://asia.nikkei.com/spotlight/podcasts/podcast-tech-latest/china-dram-maker-cxmt-posts-dizzying-numbers-as-it-aims-for-ipo": "2026-05-26T04:44:32.938271+00:00",
+  "https://asia.nikkei.com/business/markets/equities/india-benefits-from-data-center-trade-despite-missing-main-ai-play": "2026-05-26T04:44:36.763195+00:00"
 }
