@@ -1,18 +1,4 @@
 {
-  "https://techcrunch.com/?p=3133365": "2026-06-16T18:16:13.356133+00:00",
-  "https://techcrunch.com/?p=3133302": "2026-06-16T18:16:15.937877+00:00",
-  "https://techcrunch.com/?p=3133261": "2026-06-16T18:16:17.776774+00:00",
-  "https://techcrunch.com/?p=3133218": "2026-06-16T18:16:20.873089+00:00",
-  "https://techcrunch.com/?p=3133252": "2026-06-16T18:16:22.693602+00:00",
-  "https://techcrunch.com/?p=3133253": "2026-06-16T18:16:24.842789+00:00",
-  "https://techcrunch.com/?p=3133240": "2026-06-16T18:16:27.174507+00:00",
-  "https://techcrunch.com/?p=3132789": "2026-06-16T18:16:29.405091+00:00",
-  "https://www.theverge.com/?p=950826": "2026-06-16T18:16:33.643230+00:00",
-  "https://www.theverge.com/?p=950229": "2026-06-16T18:16:37.356206+00:00",
-  "https://gigazine.net/news/20260616-crankgpt-local-human-powered-ai/": "2026-06-16T18:16:39.717928+00:00",
-  "https://asia.nikkei.com/business/energy/battery-storage-costs-fall-below-gas-fired-power-plants-for-first-time": "2026-06-16T18:16:42.923694+00:00",
-  "https://asia.nikkei.com/business/markets/ipo/japan-ride-hailing-app-go-races-toward-robotaxis-after-successful-ipo": "2026-06-16T18:16:45.316207+00:00",
-  "https://asia.nikkei.com/business/education/japan-wants-to-send-30-000-young-scientists-abroad-for-ai-quantum-research": "2026-06-16T18:16:48.687124+00:00",
   "https://openai.com/index/deployment-simulation": "2026-06-16T21:25:49.527965+00:00",
   "https://asia.nikkei.com/business/business-asia/foreign-activists-take-aim-at-bigger-targets-in-corporate-japan": "2026-06-16T21:25:54.357036+00:00",
   "https://asia.nikkei.com/business/tech/semiconductors/why-kioxia-is-going-easy-on-capex-despite-ai-memory-boom": "2026-06-16T21:25:57.464268+00:00",
@@ -533,5 +519,12 @@
   "https://techcrunch.com/?p=3137516": "2026-06-30T16:36:25.510358+00:00",
   "https://openai.com/index/how-chatgpt-adoption-has-expanded": "2026-06-30T16:36:29.747611+00:00",
   "https://openai.com/index/core-dump-epidemiology-data-infrastructure-bug": "2026-06-30T16:36:32.397241+00:00",
-  "https://asia.nikkei.com/business/technology/artificial-intelligence/japan-backs-softbank-led-ai-models-with-up-to-6.2bn-in-chasing-us-china": "2026-06-30T16:36:35.965842+00:00"
+  "https://asia.nikkei.com/business/technology/artificial-intelligence/japan-backs-softbank-led-ai-models-with-up-to-6.2bn-in-chasing-us-china": "2026-06-30T16:36:35.965842+00:00",
+  "https://techcrunch.com/?p=3137668": "2026-06-30T18:57:04.799695+00:00",
+  "https://techcrunch.com/?p=3137723": "2026-06-30T18:57:06.893224+00:00",
+  "https://techcrunch.com/?p=3137678": "2026-06-30T18:57:08.790031+00:00",
+  "https://techcrunch.com/?p=3137674": "2026-06-30T18:57:10.483441+00:00",
+  "https://openai.com/index/introducing-genebench-pro": "2026-06-30T18:57:13.480338+00:00",
+  "https://openai.com/index/genebench-pro/case-studies": "2026-06-30T18:57:15.884948+00:00",
+  "https://www.theverge.com/?p=959433": "2026-06-30T18:57:17.925135+00:00"
 }
