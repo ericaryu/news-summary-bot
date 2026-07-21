@@ -1,9 +1,4 @@
 {
-  "https://techcrunch.com/?p=3138667": "2026-07-07T12:27:38.915482+00:00",
-  "https://www.technologyreview.com/?p=1139413": "2026-07-07T12:27:42.657494+00:00",
-  "https://ascii.jp/elem/000/004/416/4416746/?rss": "2026-07-07T12:27:46.292621+00:00",
-  "https://ascii.jp/elem/000/004/416/4416684/?rss": "2026-07-07T12:27:48.724927+00:00",
-  "https://ascii.jp/elem/000/004/417/4417153/?rss": "2026-07-07T12:27:50.857951+00:00",
   "https://www.theverge.com/?p=961711": "2026-07-07T15:27:12.275907+00:00",
   "https://gigazine.net/news/20260707-amd-ryzen-ai-halo/": "2026-07-07T15:27:16.584986+00:00",
   "https://gigazine.net/news/20260707-ternlight-webassembly-embeddings/": "2026-07-07T15:27:18.230498+00:00",
@@ -537,5 +532,9 @@
   "https://www.technologyreview.com/?p=1140602": "2026-07-21T12:08:41.667419+00:00",
   "https://www.theverge.com/?p=968136": "2026-07-21T12:08:49.551658+00:00",
   "https://gigazine.net/news/20260721-app-store-new-apps/": "2026-07-21T12:08:54.521998+00:00",
-  "https://gigazine.net/news/20260721-apple-genius-bar-live-note/": "2026-07-21T12:08:56.596826+00:00"
+  "https://gigazine.net/news/20260721-apple-genius-bar-live-note/": "2026-07-21T12:08:56.596826+00:00",
+  "https://techcrunch.com/?p=3144590": "2026-07-21T14:34:27.133430+00:00",
+  "https://www.theverge.com/?p=968255": "2026-07-21T14:34:31.024741+00:00",
+  "https://gigazine.net/news/20260721-cloudflare-service-token/": "2026-07-21T14:34:34.315522+00:00",
+  "https://gigazine.net/news/20260721-agent-swarm-model-economics/": "2026-07-21T14:34:36.502725+00:00"
 }
