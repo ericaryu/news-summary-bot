@@ -1,12 +1,4 @@
 {
-  "https://openai.com/index/mufg": "2026-07-08T03:35:24.141957+00:00",
-  "https://gigazine.net/news/20260708-claude-cowork-phone/": "2026-07-08T03:35:28.352335+00:00",
-  "https://gigazine.net/news/20260708-anthropic-claude-fable-5-extended/": "2026-07-08T03:35:30.925838+00:00",
-  "https://gigazine.net/news/20260708-microsoft-ai-cost-cutting-relying-more-own-models/": "2026-07-08T03:35:33.126148+00:00",
-  "https://gigazine.net/news/20260708-google-state-of-ai-infrastructure/": "2026-07-08T03:35:35.393992+00:00",
-  "https://gigazine.net/news/20260708-thieves-target-ai-data-center/": "2026-07-08T03:35:37.626669+00:00",
-  "https://asia.nikkei.com/editor-s-picks/interview/taiwan-s-top-shipbuilder-bets-on-defense-drive-amid-china-s-power-play": "2026-07-08T03:35:42.816119+00:00",
-  "https://asia.nikkei.com/business/transportation/uzbek-plan-to-open-up-aviation-unfolds-with-new-airport-airline-ipo": "2026-07-08T03:35:46.860886+00:00",
   "https://gigazine.net/news/20260708-rowboat/": "2026-07-08T06:29:01.931868+00:00",
   "https://gigazine.net/news/20260708-commonwealth-prize-claims-ai-use-win/": "2026-07-08T06:29:04.634654+00:00",
   "https://gigazine.net/news/20260708-meta-ai-glasses-capture-led/": "2026-07-08T06:29:07.465817+00:00",
@@ -538,5 +530,13 @@
   "https://www.theverge.com/?p=968703": "2026-07-21T23:29:03.394036+00:00",
   "https://asia.nikkei.com/spotlight/supply-chain/nvidia-and-wistron-to-build-blackwell-ai-servers-in-texas": "2026-07-21T23:29:07.382070+00:00",
   "https://techcrunch.com/?p=3145004": "2026-07-22T00:59:40.379434+00:00",
-  "https://ascii.jp/elem/000/004/421/4421131/?rss": "2026-07-22T00:59:44.619780+00:00"
+  "https://ascii.jp/elem/000/004/421/4421131/?rss": "2026-07-22T00:59:44.619780+00:00",
+  "https://techcrunch.com/?p=3145006": "2026-07-22T04:25:34.598555+00:00",
+  "https://gigazine.net/news/20260722-nvidia-synthetic-video-detector/": "2026-07-22T04:25:39.234077+00:00",
+  "https://gigazine.net/news/20260722-google-gemini-3-6-flash/": "2026-07-22T04:25:41.611084+00:00",
+  "https://gigazine.net/news/20260722-openai-accidentally-hacked-hugging-face/": "2026-07-22T04:25:43.032059+00:00",
+  "https://gigazine.net/news/20260722-qwen-image-3/": "2026-07-22T04:25:44.835539+00:00",
+  "https://ascii.jp/elem/000/004/421/4421229/?rss": "2026-07-22T04:25:47.349233+00:00",
+  "https://asia.nikkei.com/business/markets/currencies/yen-falls-to-39-year-low-of-163-per-dollar-on-iran-tensions-takaichi-plan": "2026-07-22T04:25:49.832561+00:00",
+  "https://asia.nikkei.com/spotlight/comment/trump-s-renewed-outreach-to-kim-raises-prospects-of-new-talks": "2026-07-22T04:25:53.131181+00:00"
 }
